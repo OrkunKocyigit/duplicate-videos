@@ -1,0 +1,4 @@
+python-magic
+python-magic-bin; platform_system == 'Windows'
+videohash
+jsonpickle
