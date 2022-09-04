@@ -77,15 +77,21 @@ def calculate_hashes(video_files: list[VideoFile]) -> None:
 
 def find_duplicates(
         video_files: list[VideoFile]
-) -> list[tuple[VideoFile, VideoFile]]:
-    result = []
+) -> dict:
+    similar: list[tuple[VideoFile, VideoFile]] = []
+    same: list[tuple[VideoFile, VideoFile]] = []
     for video_file in video_files:
         for video_file_dupe in video_files:
-            if not video_file.path.samefile(
-                    video_file_dupe.path) and video_file.hash.is_similar(
-                    video_file_dupe.hash):
-                result.append((video_file, video_file_dupe))
-    return result
+            if not video_file.path.samefile(video_file_dupe.path):
+                video_tuple = (video_file, video_file_dupe)
+                if video_file.hash == video_file_dupe.hash:
+                    same.append(video_tuple)
+                elif video_file.hash.is_similar(video_file_dupe.hash):
+                    similar.append(video_tuple)
+    return {
+        'same': same,
+        'similar': similar
+    }
 
 
 def save_file(file_name: str, obj: typing.Any) -> None:
